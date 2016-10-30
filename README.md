@@ -1,6 +1,5 @@
 # Data Science
-
-Collection of applied data science
+A collection of applied analytics
 
 ##Tools
 * [Time Series Plots] (https://github.com/tyfal/Data-Science/blob/master/Regression.ipynb)
@@ -9,7 +8,7 @@ Collection of applied data science
 
 ![reg](https://github.com/tyfal/Data-Science/blob/master/Regression-git.png)
 
-##Data in business
+##Data in Business
 
 * [Why data analysis](https://github.com/tyfal/Data-Science/blob/master/WhyDataAnalysis.ipynb)
 
