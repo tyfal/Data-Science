@@ -9,7 +9,9 @@ Collection of applied data science
 
 ![reg](https://github.com/tyfal/Data-Science/blob/master/Regression-git.png)
 
-* [Data in business] (https://github.com/tyfal/Data-Science/blob/master/WhyDataAnalysis.ipynb)
+##Data in business
+
+* [Why data analysis](https://github.com/tyfal/Data-Science/blob/master/WhyDataAnalysis.ipynb)
 
 <img src="https://github.com/tyfal/Data-Science/blob/master/TimeSeries.png" alt="time series graph" width = "450" />
 
