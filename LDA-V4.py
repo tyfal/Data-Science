@@ -5,15 +5,14 @@ Created on Sat Jul 16 13:06:18 2016
 @author: TFalcoff
 """
 
-from nltk.tokenize import RegexpTokenizer
-
 from stop_words import get_stop_words
-
 from nltk.stem.porter import PorterStemmer
-
+from nltk.tokenize import RegexpTokenizer
 from gensim import corpora, models
 
 import string
+
+import time
 
 def input_and_process():
     surv_name = input("survey name here (don't forget .txt): ")
@@ -31,57 +30,26 @@ def input_and_process():
     for char in text:
             
         if char in string.punctuation:
-            if char == "'":
-                char = ''
-            else:
-                char = ' '
-    
-        if char in string.whitespace and char != ' ':
-            char = ',!'
-    
+            char = ''
         new_str += char.lower()
     
-    doc_set = new_str.split(',!')
-    
-    tokenizer = RegexpTokenizer(r'\w+')
-    
-    # create English stop words list
-    
-    en_stop = get_stop_words('en')
-    
-    more_stops = ["loans","loan", "quicken","mortgage","mortgages","ve","s","m","t"]
-    for stop in more_stops:
-        en_stop.append(stop)
+    tokenizer = RegexpTokenizer()
         
-    # Create p_stemmer of class PorterStemmer
+    tokens = tokenizer.tokenize(text)
+ 
+    en_stop = get_stop_words('en')
     
     p_stemmer = PorterStemmer()
     
     texts = []
 
-# loop through document list
-
-    for i in doc_set:
+    stopped_tokens = []
+    [stopped_tokens.append(i) for i in tokens if i not in en_stop]
     
-        # clean and tokenize document string
-    
-        raw = i.lower()
-    
-        tokens = tokenizer.tokenize(raw)
-    
-        # remove stop words from tokens
-    
-        stopped_tokens = []
-        [stopped_tokens.append(i) for i in tokens if i not in en_stop]
-    
-        # stem tokens
-    
-        stemmed_tokens = []
-        [stemmed_tokens.append(p_stemmer.stem(i)) for i in stopped_tokens]
-    
-        # add tokens to list
-    
-        texts.append(stemmed_tokens)
+    stemmed_tokens = []
+    [stemmed_tokens.append(p_stemmer.stem(i)) for i in stopped_tokens]
+        
+    texts.append(stemmed_tokens)
         
     return texts
 
@@ -101,21 +69,15 @@ def run_LDA(texts):
                     
             except IndexError: pass
     
-                # turn our tokenized documents into a id <-> term dictionary
-            
     dictionary = corpora.Dictionary(fin_text)
-            
-                # convert tokenized documents into a document-term matrix
             
     corpus = [dictionary.doc2bow(tn) for tn in fin_text]
             
-                # generate LDA model
-            
-    ldamodel = models.ldamodel.LdaModel(corpus, num_topics=20,
+    ldamodel = models.ldamodel.LdaModel(corpus, num_topics=10,
                                     iterations = 500, 
                                 id2word = dictionary, passes=100)
                         
-    for topic in ldamodel.print_topics(num_topics = 20, num_words = 2):    
+    for topic in ldamodel.print_topics(num_topics = 10, num_words = 1):    
                                      
         num_words = 1    
         print('\n{}'.format(topic))
@@ -206,13 +168,10 @@ def vis_hist(hist_tops):
     
                        
 def main():
+    t0 = time.time()
     texts = input_and_process()
     run_LDA(texts)
-    #hist = hist_tops(list_tops)
-    print("\n")
-    #prox_tops(list_tops,texts)
-    print("\n")
-    #vis_hist(hist)
-    
+    t1 = time.time()
+    print('\n{} minutes wall time'.format(round((t1-t0)/60),4))
 main()
     
