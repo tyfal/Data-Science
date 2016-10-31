@@ -5,7 +5,7 @@ A collection of applied analytics
 
 * [Why data analysis](https://github.com/tyfal/Data-Science/blob/master/WhyDataAnalysis.ipynb)
 
-<img src="https://github.com/tyfal/Data-Science/blob/master/Images/TimeSeries.png" alt="time series graph" width = "450" />
+<img src="https://github.com/tyfal/Data-Science/blob/master/Images/timeseries.png" alt="time series graph" width = "450" />
 
 ##Tools
 
@@ -13,7 +13,7 @@ A collection of applied analytics
 * [Regression with cross sectional data] (https://github.com/tyfal/Data-Science/blob/master/TimeSeries.ipynb)
 * [Topic modeling with Latent Dirichlet Allocation] (https://github.com/tyfal/Data-Science/blob/master/LDA-V4.py)
 
-![reg](https://github.com/tyfal/Data-Science/blob/master/Images/Regression-git.png)
+![reg](https://github.com/tyfal/Data-Science/blob/master/Images/regression.png)
 
 
 
