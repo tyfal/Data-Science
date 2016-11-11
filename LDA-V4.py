@@ -9,35 +9,32 @@ from stop_words import get_stop_words
 from nltk.stem.porter import PorterStemmer
 from nltk.tokenize import RegexpTokenizer
 from gensim import corpora, models
-import matplotlib.pyplot as plt
-import string, time
+import string, time, requests, bs4
+
 
 
 class LDA:
 
-    def __init__(self, text_name):
+    def __init__(self, url):
+       
+        page = requests.get(url)
+
+        soup = bs4.BeautifulSoup(page, 'html.parser')
         
-        t0 = time.clock()
-        
-        surv = open(text_name)
-        
-        r_surv = surv.read()
-        
-        text = str(r_surv)
-        
-        surv.close()
+        text = soup.find_all('a')
         
         new_str = ''
         
         for char in text:
-                
-            if char in string.punctuation:
-                char = ''
-            new_str += char.lower()
+            
+            if str(char) == char:
+                if char in string.punctuation:
+                    char = ''
+                new_str += char.lower()
                     
         tokenizer = RegexpTokenizer(r'\w+')
         
-        tokens = tokenizer.tokenize(text)
+        tokens = tokenizer.tokenize(new_str)
             
         en_stop = get_stop_words('en')
         
