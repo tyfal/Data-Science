@@ -16,13 +16,17 @@ class spyware:
         
         page = requests.get(url).text
         soup = BeautifulSoup(page, 'lxml')
-
+        
+        
+        #page title
         n_title = ''
         for char in soup.title:
             if char in string.punctuation:
                 char = ' '
             n_title += char
             
+        
+        #wiki links    
         l_title = n_title.split(' ')
 
         l_title = l_title[:-2]
@@ -31,17 +35,37 @@ class spyware:
         
         links=[]
         [links.append(link['href']) for link in soup.find_all('a', href=True)]
-        fin_links=[]
+        n_links=[]
         for link in links:
             if link[:6] == '/wiki/' and ':' not in link:
                 if 'Main_Page' not in link and link[6:] != title:
-                    fin_links.append(link)
+                    n_links.append(link)
         
-        self.links = fin_links
+        self.links = n_links
         
+        
+        #page text (dirty)
+        texts = soup.find_all(text=True)
+        n_texts = []
+        for line in texts:
+            n_line = line.split(' ')
+            [n_texts.append(word) for word in n_line]
+        self.text = n_texts
+                
     
     def links(self):
         
         return self.links
+        
+        
+    def text(self):
+        
+        return self.text
+        
+'''
+To Do:
+    1. get a crawler up and running
+    2. create a relationship matrix for all of the pages the crawler spans
+    3. visualize the matrix (make it worthwhile, i.e., cool and interactive)
                     
         
