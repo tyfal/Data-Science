@@ -6,11 +6,11 @@ Created on Fri Nov 11 00:45:52 2016
 @author: tfalcoff
 """
 from bs4 import BeautifulSoup
-import pandas as pd
+import networkx as nx
 import requests, string
 
 
-class wiki_web:
+class WikiWeb:
     
     
     def __init__(self, url):
@@ -64,11 +64,11 @@ class wiki_web:
         matrix = []
 
         #dictionary from self.list outputs
-        n_links = wiki_web(self.url).links()
+        n_links = WikiWeb(self.url).links()
         wiki = 'https://en.wikipedia.org'
         for link in n_links:
             if link not in dict_links:
-                dict_links[link] = (wiki_web(wiki+link).links())
+                dict_links[link] = (WikiWeb(wiki+link).links())
                 
         #matrix mapping connections
         for a_link in n_links:
@@ -84,6 +84,20 @@ class wiki_web:
         self.crawl = matrix
         
         return self.crawl
+        
+    
+    def network(self):
+        
+        #network vis connection
+        G = nx.Graph()
+        matrix = self.crawl()
+        n_links = WikiWeb(self.url).links()
+        for x in matrix:
+            for y in x:
+                if y == 1:
+                    G.add_edge(n_links[matrix.index(x)], n_links[x.index(y)])
+        GREEN='#77DD77'
+        nx.draw(G, node_color=GREEN, with_labels=False)
         
             
         
