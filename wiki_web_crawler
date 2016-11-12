@@ -64,16 +64,16 @@ class wiki_web:
         matrix = []
 
         #dictionary from self.list outputs
-        a_links = wiki_web(self.url).links()
+        n_links = wiki_web(self.url).links()
         wiki = 'https://en.wikipedia.org'
-        for link in a_links:
+        for link in n_links:
             if link not in dict_links:
                 dict_links[link] = (wiki_web(wiki+link).links())
                 
         #matrix mapping connections
-        for a_link in a_links:
+        for a_link in n_links:
             array = []
-            for b_link in a_links:
+            for b_link in n_links:
                 if b_link in dict_links[a_link]:
                     array.append(1)
                 else: 
