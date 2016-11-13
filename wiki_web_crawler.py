@@ -6,7 +6,10 @@ Created on Fri Nov 11 00:45:52 2016
 @author: tfalcoff
 """
 from bs4 import BeautifulSoup
+from networkx.readwrite import json_graph
 import networkx as nx
+import matplotlib.pyplot as plt
+import numpy as np
 import requests, string
 
 
@@ -89,16 +92,28 @@ class WikiWeb:
     def network(self):
         
         #network vis connection
-        G = nx.Graph()
+        self.G = nx.Graph()
         matrix = self.crawl()
         n_links = WikiWeb(self.url).links()
         for x in matrix:
             for y in x:
                 if y == 1:
-                    G.add_edge(n_links[matrix.index(x)], n_links[x.index(y)])
-        GREEN='#77DD77'
-        nx.draw(G, node_color=GREEN, with_labels=False)
+                    self.G.add_edge(n_links[matrix.index(x)], n_links[x.index(y)])
         
+        return self.G
+        
+        
+    def chord(self):
+        
+        n_G = WikiWeb(self.url).network()
+        #data = json_graph.adjacency_data(n_G)
+        
+        plt.figure(figsize=(18,18))
+        nx.draw_circular(n_G,node_color='g', edge_color='#909090', node_size=900)
+        plt.axis('equal')
+        
+        
+    #def matrix(self):
             
         
         
