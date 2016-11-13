@@ -108,8 +108,8 @@ class WikiWeb:
         n_G = WikiWeb(self.url).network()
         #data = json_graph.adjacency_data(n_G)
         
-        plt.figure(figsize=(18,18))
-        nx.draw_circular(n_G,node_color='g', edge_color='#909090', node_size=900)
+        plt.figure()
+        nx.draw_circular(n_G,node_color='g', edge_color='#909090', node_size=100, with_labels=True)
         plt.axis('equal')
         
         
