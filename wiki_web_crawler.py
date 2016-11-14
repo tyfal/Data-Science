@@ -10,6 +10,7 @@ from networkx.readwrite import json_graph
 import networkx as nx
 import matplotlib.pyplot as plt
 import plotly.plotly as py
+import plotly.tools as tls
 from plotly.graph_objs import *
 import numpy as np
 import requests, string
@@ -45,7 +46,8 @@ class WikiWeb:
         for link in links:
             if link[:6] == '/wiki/' and ':' not in link:
                 if 'Main_Page' not in link and link[6:] != title:
-                    n_links.append(link)
+                    if link not in n_links:
+                        n_links.append(link)
         links = n_links
         
         return links
@@ -165,16 +167,15 @@ class WikiWeb:
         np_trix = np.array(matrix)
         Gr = nx.from_numpy_matrix(np_trix)
         pos = nx.spring_layout(Gr)
-        labels = links
         traceE=scatter_edges(Gr, pos)
-        traceN=scatter_nodes(pos, labels=labels)
+        traceN=scatter_nodes(pos, labels=links)
         
-        layout.update(title='Wiki Network: '+self.url)
+        layout.update(title='WikiNetwork')
         data1=Data([traceE, traceN])
         fig = Figure(data=data1, layout=layout)
         fig['layout'].update(annotations=make_annotations(pos, [str(k) for k in range(len(pos))]))  
         py.iplot(fig, filename='wiki-network')
-        
+
         
 '''
 To Do:
