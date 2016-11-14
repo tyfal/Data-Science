@@ -42,9 +42,10 @@ class WikiWeb:
         #wiki links    
         links=[]
         [links.append(link['href']) for link in self.soup.find_all('a', href=True)]
+        commons=['/wiki/International_Standard_Book_Number', '/wiki/Digital_object_identifier']
         n_links=[]
         for link in links:
-            if link[:6] == '/wiki/' and ':' not in link:
+            if link[:6] == '/wiki/' and ':' not in link and link not in commons:
                 if 'Main_Page' not in link and link[6:] != title:
                     if link not in n_links:
                         n_links.append(link)
@@ -88,11 +89,11 @@ class WikiWeb:
                     array.append(0)
                     
             matrix.append(array)
-                
+
 
         #from https://plot.ly/ipython-notebooks/networks/
 
-        def scatter_edges(G, pos, line_color=None, line_width=1):
+        def scatter_edges(G, pos, line_color='#888', line_width=.5):
             trace = Scatter(x=[], y=[], mode='lines')
             for edge in G.edges():
                 trace['x'] += [pos[edge[0]][0],pos[edge[1]][0], None]
@@ -103,49 +104,40 @@ class WikiWeb:
                     trace['line']['color']=line_color
             return trace            
         
-        def scatter_nodes(pos, labels=None, color=None, size=20, opacity=1):
+        def scatter_nodes(pos, labels=None, size=20):
             # pos is the dict of node positions
             # labels is a list  of labels of len(pos), to be displayed when hovering the mouse over the nodes
             # color is the color for nodes. When it is set as None the Plotly default color is used
             # size is the size of the dots representing the nodes
             #opacity is a value between [0,1] defining the node color opacity
             L=len(pos)
-            trace = Scatter(x=[], y=[],  mode='markers', marker=Marker(size=[]))
+            trace = Scatter(
+                                    x=[], 
+                                    y=[], 
+                                    text=[],
+                                    mode='markers', 
+                                    hoverinfo='text',
+                                    marker=Marker(
+                                        showscale=True,
+                                        # colorscale options
+                                        # 'Greys' | 'Greens' | 'Bluered' | 'Hot' | 'Picnic' | 'Portland' |
+                                        # Jet' | 'RdBu' | 'Blackbody' | 'Earth' | 'Electric' | 'YIOrRd' | 'YIGnBu'
+                                        colorscale='YIGnBu',
+                                        reversescale=True,
+                                        color=[],         
+                                        colorbar=dict(
+                                            thickness=15,
+                                            title='Node Connections',
+                                            xanchor='left',
+                                            titleside='right'
+                                        ),
+                                        line=dict(width=2)))
             for k in range(L):
                 trace['x'].append(pos[k][0])
                 trace['y'].append(pos[k][1])
-            attrib=dict(name='', text=labels , hoverinfo='text', opacity=opacity) # a dict of Plotly node attributes
+            attrib=dict(name='', text=labels , hoverinfo='text') # a dict of Plotly node attributes
             trace=dict(trace, **attrib)# concatenate the dict trace and attrib
-            trace['marker']['size']=size
             return trace   
-        
-        width=500
-        height=500
-        axis=dict(showline=False, # hide axis line, grid, ticklabels and  title
-                  zeroline=False,
-                  showgrid=False,
-                  showticklabels=False,
-                  title='' 
-                  )
-        layout=Layout(title= 'Fruchterman Reingold  layout',  #
-            font= Font(),
-            showlegend=False,
-            autosize=False,
-            width=width,
-            height=height,
-            xaxis=XAxis(axis),
-            yaxis=YAxis(axis),
-            margin=Margin(
-                l=40,
-                r=40,
-                b=85,
-                t=100,
-                pad=0,
-               
-            ),
-            hovermode='closest',
-            plot_bgcolor='#EFECEA', #set background color            
-            )
         
         def make_annotations(pos, text, font_size=14, font_color='rgb(25,25,25)'):
             L=len(pos)
@@ -170,17 +162,23 @@ class WikiWeb:
         traceE=scatter_edges(Gr, pos)
         traceN=scatter_nodes(pos, labels=links)
         
-        layout.update(title='WikiNetwork')
+        for node, adjacencies in enumerate(Gr.adjacency_list()):
+            traceN['marker']['color'].append(len(adjacencies))
+        
         data1=Data([traceE, traceN])
-        fig = Figure(data=data1, layout=layout)
-        fig['layout'].update(annotations=make_annotations(pos, [str(k) for k in range(len(pos))]))  
+        fig = Figure(data=data1, layout=Layout(
+                title='<br>Wiki Network: '+self.url,
+                titlefont=dict(size=16),
+                showlegend=False, 
+                hovermode='closest',
+                margin=dict(b=20,l=5,r=5,t=40),
+                xaxis=XAxis(showgrid=False, zeroline=False, showticklabels=False),
+                yaxis=YAxis(showgrid=False, zeroline=False, showticklabels=False)))
         py.iplot(fig, filename='wiki-network')
 
         
 '''
 To Do:
-    1. get a crawler up and running
-    2. create a relationship matrix for all of the pages the crawler spans
-    3. visualize the matrix (make it worthwhile, i.e., cool and interactive)
+    1. make network circular
 '''                
         
