@@ -12,9 +12,9 @@ A collection of applied analytics
 * [Time series plots] (https://github.com/tyfal/Data-Science/blob/master/TimeSeries.ipynb)
 * [Regression with cross sectional data] (https://github.com/tyfal/Data-Science/blob/master/Regression.ipynb)
 * [Topic modeling with Latent Dirichlet Allocation] (https://github.com/tyfal/Data-Science/blob/master/LDA-V4.py)
-* [Wikipedia web crawling and interactive network visualization (https://github.com/tyfal/Data-Science/blob/master/wiki_web_crawler.py)
+* [Wikipedia web crawling and interactive network visualization] (https://github.com/tyfal/Data-Science/blob/master/wiki_web_crawler.py)
 
-![reg](https://github.com/tyfal/Data-Science/blob/master/Images/wiki-network-image.png)
+![wiki](https://github.com/tyfal/Data-Science/blob/master/Images/wiki-network-image.png)
 
 
 
