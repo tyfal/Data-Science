@@ -47,8 +47,9 @@ class WikiWeb:
         for link in links:
             if link[:6] == '/wiki/' and ':' not in link and link not in commons:
                 if 'Main_Page' not in link and link[6:] != title:
-                    if link not in n_links:
-                        n_links.append(link)
+                    if '#' not in link:
+                        if link not in n_links:
+                            n_links.append(link)
         links = n_links
         
         return links
@@ -67,7 +68,7 @@ class WikiWeb:
         return text
         
         
-    def network(self):
+    def matrix(self):
         
         dict_links = {}
         matrix = []
@@ -89,7 +90,11 @@ class WikiWeb:
                     array.append(0)
                     
             matrix.append(array)
-
+        
+        return matrix
+        
+        
+    def network(self):
 
         #from https://plot.ly/ipython-notebooks/networks/
 
@@ -155,8 +160,8 @@ class WikiWeb:
                 )
             return annotations  
             
-        
-        np_trix = np.array(matrix)
+        links = WikiWeb(self.url).links()
+        np_trix = np.array(WikiWeb(self.url).matrix())
         Gr = nx.from_numpy_matrix(np_trix)
         pos = nx.spring_layout(Gr)
         traceE=scatter_edges(Gr, pos)
@@ -175,10 +180,26 @@ class WikiWeb:
                 xaxis=XAxis(showgrid=False, zeroline=False, showticklabels=False),
                 yaxis=YAxis(showgrid=False, zeroline=False, showticklabels=False)))
         py.iplot(fig, filename='wiki-network')
+        
+        
+    def shortest_path(self, source, target):
+        
+        links = WikiWeb(self.url).links()
+        matrix = WikiWeb(self.url).matrix()
+        
+        G = nx.Graph()
+        for a_link in matrix:
+            for b_link in a_link:
+                if b_link == 1:
+                    G.add_edge(links[matrix.index(a_link)], 
+                                     links[a_link.index(b_link)])
+                
+        return nx.shortest_path(G, source, target)
 
         
 '''
 To Do:
-    1. make network circular
+    1. fix shortest path
+    2, be done.
 '''                
         
