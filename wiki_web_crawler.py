@@ -6,14 +6,12 @@ Created on Fri Nov 11 00:45:52 2016
 @author: tfalcoff
 """
 from bs4 import BeautifulSoup
-from networkx.readwrite import json_graph
 import networkx as nx
-import matplotlib.pyplot as plt
 import plotly.plotly as py
 import plotly.tools as tls
 from plotly.graph_objs import *
 import numpy as np
-import requests, string
+import requests, string, time
 
 
 
@@ -59,13 +57,21 @@ class WikiWeb:
         
         #page text (dirty)
         texts = self.soup.find_all(text=True)
+        '''
         n_texts = []
         for line in texts:
             n_line = line.split(' ')
             [n_texts.append(word) for word in n_line]
         text = n_texts
+        '''
+        text=[]
+        for line in texts:
+            if line.count(' ') > 1:
+                text.append(line)
         
         return text
+        
+        #get hrefs too and index sentence after href
         
         
     def matrix(self):
@@ -109,6 +115,7 @@ class WikiWeb:
                     trace['line']['color']=line_color
             return trace            
         
+            
         def scatter_nodes(pos, labels=None, size=20):
             # pos is the dict of node positions
             # labels is a list  of labels of len(pos), to be displayed when hovering the mouse over the nodes
@@ -143,6 +150,7 @@ class WikiWeb:
             attrib=dict(name='', text=labels , hoverinfo='text') # a dict of Plotly node attributes
             trace=dict(trace, **attrib)# concatenate the dict trace and attrib
             return trace   
+            
         
         def make_annotations(pos, text, font_size=14, font_color='rgb(25,25,25)'):
             L=len(pos)
@@ -182,24 +190,38 @@ class WikiWeb:
         py.iplot(fig, filename='wiki-network')
         
         
-    def shortest_path(self, source, target):
+    def shortest_path(self, target):
         
+        #checkmark 1
+        d0 = time.clock()
+        dict_links = {self.url[24:]:WikiWeb(self.url).links()}
         links = WikiWeb(self.url).links()
-        matrix = WikiWeb(self.url).matrix()
+        wiki = 'https://en.wikipedia.org'
+        print(time.clock()-d0)
         
-        G = nx.Graph()
-        for a_link in matrix:
-            for b_link in a_link:
-                if b_link == 1:
-                    G.add_edge(links[matrix.index(a_link)], 
-                                     links[a_link.index(b_link)])
-                
-        return nx.shortest_path(G, source, target)
-
+        #checkmark 2
+        d0 = time.clock()
+        count=0
+        while target[24:] not in links:
+            link = links[count]
+            dict_links.update({link:WikiWeb(wiki+link).links()})
+            for link1 in dict_links[link]:
+                if link1 not in links:
+                    links.append(link1)
+            count+=1
+        print(time.clock()-d0)
         
-'''
-To Do:
-    1. fix shortest path
-    2, be done.
-'''                
+        #checkmark 3
+        d0 = time.clock()
+        gr = nx.from_dict_of_lists(dict_links)
+        sp = nx.shortest_path(gr, self.url[24:], target[24:])
+        print(time.clock()-d0)
+        
+        return sp
+        
+        '''
+        To Do:
+            1. fix shortest path
+            2, be done.
+        '''                
         
