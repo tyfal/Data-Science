@@ -4,7 +4,7 @@ A collection of applied analytics
 ##Data in Business
 
 * [Why data analysis](https://github.com/tyfal/Data-Science/blob/master/WhyDataAnalysis.ipynb)
-* [Wikipedia Network](https://github.com/tyfal/Data-Science/WikiWeb.ipynb)
+* [Wikipedia Network](https://github.com/tyfal/Data-Science/blob/master/WikiWeb.ipynb)
 
 <img src="https://github.com/tyfal/Data-Science/blob/master/Images/timeseries.png" alt="time series graph" width = "450" />
 
